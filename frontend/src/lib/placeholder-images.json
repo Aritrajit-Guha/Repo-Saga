@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-map",
+      "description": "An old, detailed fantasy map spread out on a wooden table, suggesting adventure and exploration.",
+      "imageUrl": "https://images.unsplash.com/photo-1665077713402-ad959854d778?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYW50YXN5JTIwbWFwfGVufDB8fHx8MTc2NTAyMTQyNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fantasy map"
+    },
+    {
+      "id": "gatekeeper-persona",
+      "description": "A stern, armored guard standing before a large castle gate.",
+      "imageUrl": "https://images.unsplash.com/photo-1731194920738-a45527ef583f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhcm1vcmVkJTIwZ3VhcmR8ZW58MHx8fHwxNzY1MTE0MjQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "armored guard"
+    },
+    {
+      "id": "library-persona",
+      "description": "A vast, ancient library with towering shelves of books.",
+      "imageUrl": "https://images.unsplash.com/photo-1576414160011-98dfab3aa889?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhbmNpZW50JTIwbGlicmFyeXxlbnwwfHx8fDE3NjUwNDM4NTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ancient library"
+    },
+    {
+      "id": "dragon-persona",
+      "description": "A fierce dragon with scales made of tangled gears and code.",
+      "imageUrl": "https://images.unsplash.com/photo-1646586679950-4fccb4a5972d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWNoYW5pY2FsJTIwZHJhZ29ufGVufDB8fHx8MTc2NTExNDI0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mechanical dragon"
+    },
+    {
+      "id": "town-square-persona",
+      "description": "A bustling medieval town square with market stalls.",
+      "imageUrl": "https://images.unsplash.com/photo-1718994999977-d80400f107c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYXJrZXQlMjBzcXVhcmV8ZW58MHx8fHwxNzY1MTE0MjQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "market square"
+    }
+  ]
+}

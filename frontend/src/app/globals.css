@@ -1,0 +1,167 @@
+/* Import Gaming Fonts FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cinzel:wght@400;700;900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=RetroPlix&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&family=Nosifer&family=Pixelify+Sans:wght@400..700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Jacquard+12&family=Jersey+15&family=Nosifer&family=Pixelify+Sans:wght@400..700&display=swap');
+
+.nosifer {
+  font-family: "Nosifer", sans-serif;
+}
+
+.jacquard {
+  font-family: "Jacquard 12", system-ui;
+}
+
+.jersey {
+  font-family: "Jersey 15", sans-serif;
+}
+
+.pixelify {
+  font-family: "Pixelify Sans", sans-serif;
+}
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* "System" Interface Colors */
+    --background: 240 20% 3%; /* Almost pure black */
+    --foreground: 210 20% 98%;
+
+    /* Glassy Panels (The "System Window" blue/black) */
+    --card: 240 30% 6%;
+    --card-foreground: 195 90% 85%; /* Glowing light blue text */
+ 
+    --popover: 240 30% 6%;
+    --popover-foreground: 195 90% 85%;
+ 
+    /* The "Solo Leveling" Electric Blue */
+    --primary: 200 100% 50%; 
+    --primary-foreground: 240 20% 3%;
+ 
+    --secondary: 260 50% 10%; /* Deep Purple/Shadow shadows */
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 240 30% 10%;
+    --muted-foreground: 200 20% 50%;
+ 
+    --accent: 260 100% 60%; /* Shadow Army Purple */
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 90% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 50% 20%; /* Faint blue borders */
+    --input: 240 30% 10%;
+    --ring: 200 100% 50%;
+ 
+    --radius: 0.25rem; /* Sharper corners for tech feel */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Poppins', sans-serif; /* Body text font */
+  }
+  
+  h1, h2, h3, .font-headline {
+    font-family: 'RetroPlix', serif; /* Heading font */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Custom Scrollbar - "System" Style */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 rounded hover:bg-primary transition-colors shadow-[0_0_10px_theme(colors.primary.DEFAULT)];
+  }
+}
+
+@layer utilities {
+  /* The "System Window" Effect */
+  .system-window {
+    @apply bg-black/80 backdrop-blur-md border border-primary/40 shadow-[0_0_20px_-5px_rgba(6,182,212,0.3)];
+    box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.05);
+  }
+
+  /* Text Glows */
+  .glow-blue {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(6, 182, 212, 0.4);
+  }
+  .glow-purple {
+    text-shadow: 0 0 10px rgba(147, 51, 234, 0.8), 0 0 20px rgba(147, 51, 234, 0.4);
+  }
+  
+  /* Image animations */
+  .float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+}
+
+/* ... existing code ... */
+
+@layer utilities {
+  /* ... existing utilities ... */
+
+  /* CINEMATIC ANIMATIONS */
+  .animate-ken-burns {
+    animation: ken-burns 20s ease-in-out infinite alternate;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes ken-burns {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.15) translate(-2%, -2%); }
+  }
+}
+
+/* ... existing code ... */
+
+@layer utilities {
+  /* SCANLINE: A horizontal laser scanning down */
+  .animate-scan {
+    animation: scan 3s linear infinite;
+  }
+  @keyframes scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+  }
+
+  /* GLITCH: Random twitching */
+  .animate-glitch {
+    animation: glitch 1s infinite;
+  }
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+}

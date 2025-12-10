@@ -1,0 +1,6 @@
+flask
+flask-cors
+google-generativeai
+PyGithub
+python-dotenv
+git+https://github.com/toon-format/toon-python.git
