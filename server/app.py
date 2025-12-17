@@ -12,6 +12,10 @@ CORS(app)
 def home():
     return jsonify({"message": "Welcome to the RepoG Backend!"})
 
+
+
+
+
 @app.route('/generate_map', methods=['POST'])
 def generate_map():
     # 1. Parse Request (TOON -> Dict)
@@ -21,13 +25,18 @@ def generate_map():
 
     repo_url = data['repoUrl']
     
-    # 2. Logic (Get GitHub Tree)
+    # 2. Logic (Get GitHub Tree & Rich Context)
     repo_data = get_repo_structure(repo_url)
+    
     if "error" in repo_data:
         return toonify({"error": repo_data["error"]}, 400)
 
-    # 3. AI Processing
-    dungeon_map_dict = generate_dungeon_map(repo_data['structure'], repo_data['readme'])
+    # 3. AI Processing (Now passing 'context' instead of just 'readme')
+    # Note: repo_data['context'] contains the README + Dependency info
+    dungeon_map_dict = generate_dungeon_map(
+        file_structure=repo_data['structure'], 
+        repo_context=repo_data['context'] 
+    )
     
     # 4. Response (Dict -> TOON)
     response_payload = {
@@ -39,16 +48,66 @@ def generate_map():
 
 
 
+# We are building the feature where a user clicks a location on the GoT Map (e.g., "The Iron Bank") #
+# and gets a specific explanation of how that code works, translated into Westeros Lore.
+# We call this endpoint: /consult_master
+
+@app.route('/consult_master', methods=['POST'])
+def consult_master():
+    from flask import request, jsonify
+    data = request.get_json()
+    
+    repo_url = data.get('repoUrl')
+    node_path = data.get('nodePath') # The folder path, e.g., "src/database"
+    
+    # 1. Reuse existing logic to get general context (optional, but helps accuracy)
+    from services.github_service import get_repo_structure, get_folder_summary
+    repo_data = get_repo_structure(repo_url) # Cached ideally
+    
+    # 2. Get specific code for that folder
+    folder_content = get_folder_summary(repo_url, node_path)
+    
+    # 3. Ask the Master
+    from services.gemini_service import explain_module_lore
+    lore = explain_module_lore(
+        code_summaries=folder_content, 
+        folder_name=node_path,
+        repo_context=repo_data.get('context', '')
+    )
+    
+    return jsonify(lore)
+
+
+
+
 @app.route('/roast_code', methods=['POST'])
 def roast_code():
-    data = parse_toon_request()
+    from flask import request
+    data = request.get_json()
+    
     if not data:
-        return toonify({"error": "Invalid TOON request. Failed to parse request body."}, 400)
+        return jsonify({"error": "Invalid JSON request. Failed to parse request body."}), 400
     
+    repo_url = data.get('repoUrl', '')
     code = data.get('code', '')
+    file_path = data.get('filePath', None) # Get path if user provided it
+
+    # Fetch Repo Data (Context + Structure)
+    from services.github_service import get_repo_structure
+    repo_data = get_repo_structure(repo_url)
     
-    feedback_dict = roast_code_logic(code)
-    return toonify(feedback_dict)
+    if "error" in repo_data:
+        return jsonify({"error": "Could not fetch repo context"}), 400
+
+    # Pass everything to the logic layer
+    feedback_dict = roast_code_logic(
+        code_snippet=code,
+        repo_context=repo_data['context'],
+        file_structure=repo_data['structure'], # Pass the tree so Gemini can guess location
+        file_path=file_path
+    )
+    
+    return jsonify(feedback_dict)
 
 
 
@@ -69,7 +128,7 @@ def scout_bugs():
 
 
 
-@app.route('/create-issue', methods=['POST'])
+@app.route('/create_issue', methods=['POST'])
 def create_issue():
     data = parse_toon_request()
     if not data:
