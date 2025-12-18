@@ -80,68 +80,69 @@ def consult_master():
 
 
 
-@app.route('/roast_code', methods=['POST'])
-def roast_code():
+# backend/app.py
+
+@app.route('/chat_with_tyrion', methods=['POST'])
+def chat_with_tyrion():
     from flask import request
     data = request.get_json()
     
-    if not data:
-        return jsonify({"error": "Invalid JSON request. Failed to parse request body."}), 400
-    
+    # 1. Get the Context
     repo_url = data.get('repoUrl', '')
-    code = data.get('code', '')
-    file_path = data.get('filePath', None) # Get path if user provided it
+    user_message = data.get('message', '') # User's typed message or code
+    chat_history = data.get('history', []) # List of previous turn objects
+    file_path = data.get('filePath', None)
 
-    # Fetch Repo Data (Context + Structure)
+    # 2. Fetch Repo Structure (Cached or fresh)
     from services.github_service import get_repo_structure
     repo_data = get_repo_structure(repo_url)
     
     if "error" in repo_data:
         return jsonify({"error": "Could not fetch repo context"}), 400
 
-    # Pass everything to the logic layer
-    feedback_dict = roast_code_logic(
-        code_snippet=code,
+    # 3. Call the Chat Logic
+    from services.gemini_service import tyrion_chat_logic
+    response = tyrion_chat_logic(
+        current_message=user_message,
+        history=chat_history,
         repo_context=repo_data['context'],
-        file_structure=repo_data['structure'], # Pass the tree so Gemini can guess location
+        file_structure=repo_data['structure'],
         file_path=file_path
     )
     
-    return jsonify(feedback_dict)
+    return jsonify(response)
 
 
 
 
-@app.route('/scout_bugs', methods=['POST'])
-def scout_bugs():
-    data = parse_toon_request()
-    if not data:
-        return toonify({"error": "Invalid TOON request. Failed to parse request body."}, 400)
+
+
+@app.route('/scout_quests', methods=['POST'])
+def scout_quests():
+    from flask import request, jsonify
+    data = request.get_json()
     
-    folder_name = data.get('nodeName')
-    # Mocking code fetch for demo
-    sample_code = "def insecure(): pass" 
+    repo_url = data.get('repoUrl')
+    node_path = data.get('nodePath') # e.g., "src/auth"
     
-    issue_data = analyze_for_issues(folder_name, sample_code)
-    return toonify(issue_data)
+    if not repo_url or not node_path:
+        return jsonify({"error": "Missing repoUrl or nodePath"}), 400
 
-
-
-
-@app.route('/create_issue', methods=['POST'])
-def create_issue():
-    data = parse_toon_request()
-    if not data:
-        return toonify({"error": "Invalid TOON request. Failed to parse request body."}, 400)
+    # 1. Fetch the code from that folder (Re-using the helper from the Maester feature)
+    from services.github_service import get_folder_summary
+    code_content = get_folder_summary(repo_url, node_path)
     
-    # Extract args from TOON object
-    result = create_github_issue(
-        token=data.get('token'),
-        repo_name=data.get('repoName'),
-        title=data.get('title'),
-        body=data.get('body')
-    )
-    return toonify(result)
+    if not code_content:
+        return jsonify({"quests": []})
+
+    # 2. AI Analysis
+    from services.gemini_service import scout_for_quests
+    quests = scout_for_quests(code_content, node_path)
+    
+    return jsonify({"quests": quests})
+
+
+
 
 
 

@@ -90,52 +90,102 @@ def explain_module_lore(code_summaries, folder_name, repo_context):
 
 
 
-def roast_code_logic(code_snippet, repo_context, file_structure, file_path=None):
+
+
+def tyrion_chat_logic(current_message, history, repo_context, file_structure, file_path=None):
     """
-    Evaluates code for quality.
-    - If Good: Praise it.
-    - If Bad: Roast it.
-    - If Duplicate: Call it out.
+    Handles a continuous conversation with context.
     """
     
-    # Step 1: The Locator (Same as before)
-    inferred_location = file_path
-    if not inferred_location:
-        # ... (Keep your locator logic here) ...
-        inferred_location = "Unknown Context"
+    # 1. Format the history for the Prompt
+    # We turn the JSON array into a script format for Gemini to read
+    conversation_script = ""
+    for turn in history[-5:]: # Keep last 5 turns to save tokens
+        conversation_script += f"User: {turn['user']}\nTyrion: {turn['ai']}\n"
 
-    # Step 2: The "Fair Judge" Prompt
+    # 2. The Prompt
     prompt = f"""
-        ROLE: You are Tyrion Lannister (Game of Thrones).
-            You are drinking wine and reviewing code. You are witty, cynical, and highly intelligent.
-        
-        CONTEXT:
-            The code is in: '{file_path or 'Unknown Lands'}'
-            Repo Stack: {repo_context}
+    ROLE: You are Tyrion Lannister. You are reviewing code in a 'Game of Thrones' style.
+    You are cynical, wise, and technically brilliant.
+    
+    CONTEXT:
+    Repo Tech Stack: {repo_context}
+    Current File: {file_path or 'Unknown'}
+    
+    PREVIOUS CONVERSATION:
+    {conversation_script}
+    
+    CURRENT USER INPUT:
+    "{current_message}"
 
-        CODE:
-            {code_snippet}
+    TASK:
+    Respond to the user.
+    - If they pasted Code: Roast it or Approve it. Provide specific fixes.
+    - If they asked a Question: Answer it with wit and technical accuracy.
+    - Maintain the persona. Do not break character.
 
-        TASK:
-            1. IF CODE IS BAD: "I drink and I know things, and I know this code is a disaster." Roast it with Westeros metaphors (e.g., "This function is as useless as nipples on a breastplate.")
-            2. IF CODE IS GOOD: "A mind needs books as a sword needs a whetstone. You have sharpened this well."
-            3. AUDIT: Find 'White Walkers' (Bugs) and 'Wildlings' (Security flaws).
-
-        OUTPUT JSON:
-            {{
-                "status": "Good/Bad",
-                "commentary": "Tyrion's Quote...",
-                "issues": [ ... ],
-                "fixed_code": "..."
-            }}
+    OUTPUT JSON:
+    {{
+        "reply": "Tyrion's response text...",
+        "fixed_code": "..." (Optional, null if not needed),
+        "issues": [] (Optional list of bugs found)
+    }}
     """
     
     try:
         response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
         return json.loads(response.text)
     except Exception as e:
-        return {"error": str(e)}
+        return {"reply": f"The maesters are confused. (Error: {str(e)})"}
     
+
+
+
+
+
+def scout_for_quests(code_summaries, folder_name):
+    """
+    Analyzes code snippets and generates 'Quests' (GitHub Issues).
+    """
+    prompt = f"""
+    ROLE: You are the Lord Commander of the Night's Watch.
+    
+    TASK: Send scouts to analyze the territory '{folder_name}'.
+    Identify 3 distinct improvement opportunities in the provided code.
+    These can be:
+    1. Bugs (White Walkers)
+    2. Missing Documentation (Lost Scrolls)
+    3. Refactoring opportunities (Rebuilding the Wall)
+    4. Security Vulnerabilities (Wildling Raids)
+
+    CODE SCROLLS:
+    {code_summaries[:5000]}
+
+    OUTPUT FORMAT (JSON Array):
+    [
+        {{
+            "quest_rank": "Easy/Medium/Hard",
+            "quest_name": "Game of Thrones Style Title (e.g., 'Fortify the Login Gate')",
+            "issue_title": "Technical GitHub Title (e.g., 'Refactor: Add Error Handling in Auth')",
+            "issue_body": "Markdown formatted description explaining the issue and how to fix it.",
+            "reward": "100 Gold"
+        }}
+    ]
+    """
+    
+    try:
+        # Generate content
+        response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+        return json.loads(response.text)
+    except Exception as e:
+        # Fallback if AI fails
+        return [{
+            "quest_name": "The Long Night",
+            "issue_title": "Manual Inspection Required",
+            "issue_body": "The scouts returned no report. (AI Error)",
+            "reward": "0 Gold"
+        }]
+
 
 
 
