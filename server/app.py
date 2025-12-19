@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from services.github_service import get_repo_structure, create_github_issue
-from services.gemini_service import generate_dungeon_map, roast_code_logic, analyze_for_issues
+from services.gemini_service import generate_dungeon_map, tyrion_chat_logic, analyze_for_issues
 from utils.toon_utils import toonify, parse_toon_request
 
 app = Flask(__name__)
