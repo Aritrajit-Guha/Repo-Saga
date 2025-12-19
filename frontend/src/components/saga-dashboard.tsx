@@ -43,7 +43,7 @@ export function SagaDashboard({ data, repoUrl }: SagaDashboardProps) {
           "bg-black/20 backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-700",
           cinematicMode ? "opacity-0 -translate-y-10 pointer-events-none" : "opacity-100"
         )}>
-          <h1 className="font-headline text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+          <h1 className="font-headline text-3xl md:text-4xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
             The Saga of <span className="text-primary glow-blue">{repoUrl}</span>
           </h1>
         </div>

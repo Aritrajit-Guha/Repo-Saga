@@ -73,7 +73,7 @@ export function RepoForm() {
       className="h-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
     >
       <WandSparkles className="mr-2 h-5 w-5" />
-      Generate
+      Summon Map
     </Button>
   </div>
 </div>
